@@ -3,6 +3,7 @@ package consumer
 import (
 	"context"
 	"log"
+	"time"
 
 	"github.com/IBM/sarama"
 )
@@ -32,6 +33,13 @@ func NewGroup(
 	config := sarama.NewConfig()
 
 	config.Consumer.Offsets.Initial = sarama.OffsetOldest
+	config.Consumer.Offsets.AutoCommit.Enable = true
+	config.Consumer.Offsets.AutoCommit.Interval = 100 * time.Millisecond
+
+	config.Consumer.MaxWaitTime = 500 * time.Millisecond
+
+	config.Consumer.Return.Errors = true
+
 	config.Consumer.Group.Rebalance.Strategy = sarama.NewBalanceStrategyRange()
 
 	consumer, err := sarama.NewConsumerGroup(brokers, groupID, config)
@@ -39,7 +47,9 @@ func NewGroup(
 		return err
 	}
 
-	subscribeGroup(ctx, topic, consumer)
+	if err := subscribeGroup(ctx, topic, consumer); err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -59,6 +69,7 @@ func subscribeGroup(
 			err := consumer.Consume(ctx, []string{topic}, handler)
 			if err != nil {
 				log.Printf("Error from consumer: %v", err)
+				log.Println("Closing consumer...")
 				return
 			}
 		}
@@ -90,6 +101,7 @@ func subscribeAll(ctx context.Context, topic string, consumer sarama.Consumer) e
 					log.Printf("Consumer cancelled: %v", err)
 					return
 				}
+
 				log.Printf("Consumed message from topic '%s': Partition: %d, Offset: %d, Key: %s, Value: %s\n",
 					msg.Topic, msg.Partition, msg.Offset, string(msg.Key), string(msg.Value))
 			}
