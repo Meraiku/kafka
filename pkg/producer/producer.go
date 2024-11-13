@@ -4,7 +4,7 @@ import (
 	"github.com/IBM/sarama"
 )
 
-func NewSyncProducer(brokers []string) (sarama.SyncProducer, error) {
+func NewSync(brokers []string) (sarama.SyncProducer, error) {
 
 	config := sarama.NewConfig()
 	config.Producer.Partitioner = sarama.NewRandomPartitioner
@@ -19,7 +19,7 @@ func NewSyncProducer(brokers []string) (sarama.SyncProducer, error) {
 	return producer, nil
 }
 
-func NewAsyncProducer(brokers []string) (sarama.AsyncProducer, error) {
+func NewAsync(brokers []string) (sarama.AsyncProducer, error) {
 
 	config := sarama.NewConfig()
 	config.Producer.Partitioner = sarama.NewRandomPartitioner
