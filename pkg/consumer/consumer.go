@@ -24,7 +24,11 @@ func NewSingle(ctx context.Context, brokers []string, topic string) error {
 	return nil
 }
 
-func NewGroup(brokers []string, groupID string) (sarama.ConsumerGroup, error) {
+func NewGroup(
+	ctx context.Context,
+	brokers []string,
+	groupID, topic string,
+) error {
 	config := sarama.NewConfig()
 
 	config.Consumer.Offsets.Initial = sarama.OffsetOldest
@@ -32,10 +36,35 @@ func NewGroup(brokers []string, groupID string) (sarama.ConsumerGroup, error) {
 
 	consumer, err := sarama.NewConsumerGroup(brokers, groupID, config)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return consumer, nil
+	subscribeGroup(ctx, topic, consumer)
+
+	return nil
+}
+
+func subscribeGroup(
+	ctx context.Context,
+	topic string,
+	consumer sarama.ConsumerGroup,
+) error {
+
+	handler := &Consumer{}
+
+	go func() {
+		defer consumer.Close()
+
+		for {
+			err := consumer.Consume(ctx, []string{topic}, handler)
+			if err != nil {
+				log.Printf("Error from consumer: %v", err)
+				return
+			}
+		}
+	}()
+
+	return nil
 }
 
 func subscribeAll(ctx context.Context, topic string, consumer sarama.Consumer) error {

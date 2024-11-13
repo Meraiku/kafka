@@ -15,7 +15,12 @@ var (
 func main() {
 	ctx := context.TODO()
 
-	if err := consumer.NewSingle(ctx, brokers, topic); err != nil {
+	//	if err := consumer.NewSingle(ctx, brokers, topic); err != nil {
+	//
+	//		fmt.Printf("Fail to create consumer: %v", err)
+	//	}
+
+	if err := consumer.NewGroup(ctx, brokers, "test", topic); err != nil {
 		fmt.Printf("Fail to create consumer: %v", err)
 	}
 
