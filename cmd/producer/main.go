@@ -44,7 +44,7 @@ func main() {
 			log.Fatalf("Fail to marshal user: %v", err)
 		}
 
-		msg := producer.PrepareMessage("user", "", data)
+		msg := producer.PrepareMessage("user", user.ID.String(), data)
 
 		switch rand.IntN(2) {
 		case 0:
