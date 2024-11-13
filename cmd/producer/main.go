@@ -59,6 +59,6 @@ func main() {
 			async.Input() <- msg
 		}
 
-		time.Sleep(500 * time.Millisecond)
+		time.Sleep(50 * time.Millisecond)
 	}
 }
