@@ -2,7 +2,11 @@ module github.com/meraiku/kafka
 
 go 1.23.0
 
-require github.com/IBM/sarama v1.43.3
+require (
+	github.com/IBM/sarama v1.43.3
+	github.com/brianvoe/gofakeit/v6 v6.28.0
+	github.com/google/uuid v1.6.0
+)
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
