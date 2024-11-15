@@ -31,8 +31,8 @@ func NewAsync(brokers []string) (sarama.AsyncProducer, error) {
 	config.Net.MaxOpenRequests = 1
 
 	// Example for correct transaction implementation for Exactly Once
-	config.Producer.Transaction.ID = "prefix.group_id.topic.paritition"
-	config.Consumer.IsolationLevel = sarama.ReadCommitted
+	//	config.Producer.Transaction.ID = "prefix.group_id.topic.paritition"
+	//config.Consumer.IsolationLevel = sarama.ReadCommitted
 
 	config.Producer.Return.Successes = true
 

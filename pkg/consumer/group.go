@@ -23,10 +23,6 @@ func (c *Consumer) Cleanup(sarama.ConsumerGroupSession) error {
 func (c *Consumer) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error {
 
 	for msg := range claim.Messages() {
-		if err := session.Context().Err(); err != nil {
-			fmt.Printf("Consumer cancelled: %v", err)
-			return err
-		}
 
 		fmt.Printf("Message claimed from topic '%s' partition %d offset %d\n",
 			msg.Topic, msg.Partition, msg.Offset)
